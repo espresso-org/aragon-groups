@@ -1,37 +1,40 @@
 import React from 'react'
-import {
-  AragonApp,
-  Button,
-  Text,
-
-  observe
-} from '@aragon/ui'
-import Aragon, { providers } from '@aragon/client'
+import { AragonApp, AppBar } from '@aragon/ui'
+import { observer, inject } from 'mobx-react'
 import styled from 'styled-components'
+import { Screen } from './components/screen'
+import { GroupsScreen } from './components/groups-screen'
+import { EditPanel } from './components/edit-panel'
+import { LoadingRing } from './components/loading-ring'
+
+export const App =
+  inject("mainStore")(
+    observer(({ mainStore }) =>
+      <AppContainer>
+        <Screen position={0} animate>
+          <span>
+            <AppBar endContent={<Button mode="strong" onClick={() => mainStore.setEditMode(EditMode.GroupCreate)}>New Group</Button>}>
+              <h1 style={{ lineHeight: 1.5, fontSize: "22px" }}>Groups</h1>
+            </AppBar>
+            {mainStore.groupsLoadingfalse ? (
+              <StyledLoadingRing />
+            ) : (
+              <GroupsScreen />
+            )}
+            <EditPanel />
+          </span>
+        </Screen>
+      </AppContainer>
+  )
+)
 
 const AppContainer = styled(AragonApp)`
   display: flex;
   align-items: center;
   justify-content: center;
 `
-
-export default class App extends React.Component {
-  render () {
-    return (
-      <AppContainer>
-        <div>
-          <ObservedCount observable={this.props.observable} />
-          <Button onClick={() => this.props.app.decrement(1)}>Decrement</Button>
-          <Button onClick={() => this.props.app.increment(1)}>Increment</Button>
-        </div>
-      </AppContainer>
-    )
-  }
-}
-
-const ObservedCount = observe(
-  (state$) => state$,
-  { count: 0 }
-)(
-  ({ count }) => <Text.Block style={{ textAlign: 'center' }} size='xxlarge'>{count}</Text.Block>
-)
+const StyledLoadingRing = styled(LoadingRing)`
+  vertical-align: middle;
+  text-align: center;
+  margin: 0 auto;
+`
