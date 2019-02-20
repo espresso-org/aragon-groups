@@ -18,7 +18,7 @@ const AppContainer = styled(AragonApp)`
 export default class App extends React.Component {
   render () {
     return (
-      <AppContainer>
+      <AppContainer publicUrl="/groups">
         <div>
           <ObservedCount observable={this.props.observable} />
           <Button onClick={() => this.props.app.decrement(1)}>Decrement</Button>
