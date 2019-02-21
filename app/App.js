@@ -24,9 +24,8 @@ export const App =
             <EditPanel />
           </span>
         </Screen>
-      </AppContainer>
+      </AppContainer>)
   )
-)
 
 const AppContainer = styled(AragonApp)`
   display: flex;

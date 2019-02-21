@@ -16,6 +16,10 @@ export class MainStore {
 
   @observable groupsLoading = false
 
+  constructor() {
+    window.mainStore = this
+  }
+
   @action setEditMode(mode) {
     this.editMode = mode
   }

@@ -5,14 +5,14 @@
   "dependencies": {
     "@aragon/client": "^1.1.0",
     "@aragon/os": "^4.0.1",
-    "@aragon/ui": "^0.16.0",
+    "@aragon/ui": "^0.31.0",
     "components": "^0.1.0",
     "literal-switch": "^1.0.2",
     "mobx": "^5.9.0",
     "mobx-react": "^5.4.3",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "styled-components": "^3.4.10"
+    "styled-components": "^4.1.3"
   },
   "devDependencies": {
     "@aragon/cli": "^5.2.2",
