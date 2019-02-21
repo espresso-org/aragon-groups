@@ -21,7 +21,7 @@ contract CounterApp is AragonApp {
     Group[] private groups;
     uint256 public value;
 
-    bytes32 constant public MANAGER_ROLE = keccak256("MANAGER_ROLE");
+    bytes32 constant public GROUP_MANAGER_ROLE = keccak256("GROUP_MANAGER_ROLE");
     bytes32 constant public INCREMENT_ROLE = keccak256("INCREMENT_ROLE");
     bytes32 constant public DECREMENT_ROLE = keccak256("DECREMENT_ROLE");
 
@@ -35,12 +35,12 @@ contract CounterApp is AragonApp {
      */
     function createGroup(string _groupName) 
         external 
-        // auth(MANAGER_ROLE) 
+        auth(GROUP_MANAGER_ROLE) 
     {
-        uint id = groups.length;
-        groups[id].groupName = _groupName;
-        groups[id].exists = true;
-        emit GroupChange(groups.length - 1);
+        uint256 index = groups.length++;
+        groups[index].groupName = _groupName;
+        groups[index].exists = true;
+        emit GroupChange(index);
     }
 
     /**
@@ -49,7 +49,7 @@ contract CounterApp is AragonApp {
      */
     function deleteGroup(uint256 _groupId) 
         external 
-        //auth(MANAGER_ROLE) 
+        auth(GROUP_MANAGER_ROLE) 
     {
         require(groups[_groupId].exists);
         delete groups[_groupId];
@@ -63,7 +63,7 @@ contract CounterApp is AragonApp {
      */
     function renameGroup(uint256 _groupId, string _newGroupName) 
         external 
-        //auth(MANAGER_ROLE) 
+        auth(GROUP_MANAGER_ROLE) 
     {
         require(groups[_groupId].exists);
         groups[_groupId].groupName = _newGroupName;
@@ -99,7 +99,7 @@ contract CounterApp is AragonApp {
         view 
         returns (uint256) 
     {
-        return groups.length - 1;
+        return groups.length;
     }
 
     /**
@@ -108,7 +108,7 @@ contract CounterApp is AragonApp {
      * @param _entity Address of the entity
      */
     function addEntityToGroup(uint256 _groupId, address _entity) 
-        auth(MANAGER_ROLE)
+        auth(GROUP_MANAGER_ROLE)
         external 
     {
         require(groups[_groupId].exists);
@@ -123,7 +123,7 @@ contract CounterApp is AragonApp {
      * @param _entity Address of the entity
      */
     function removeEntityFromGroup(uint256 _groupId, address _entity) 
-        auth(MANAGER_ROLE)
+        auth(GROUP_MANAGER_ROLE)
         external 
     {
         uint indexOfEntity = groups[_groupId].entitiesWithIndex[_entity];

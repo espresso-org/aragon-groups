@@ -1,3 +1,5 @@
+const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 export class Groups {
 
     constructor(aragonApp) {
@@ -9,9 +11,7 @@ export class Groups {
      * @param {string} groupName Name of the group
      */
     async createGroup(groupName) {
-        await this._initialize()
-
-        await this._app.createGroup(groupName)
+        await promise(this._app.createGroup(groupName))
     }
 
     /**
@@ -19,9 +19,7 @@ export class Groups {
      * @param {number} groupId Id of the group
      */
     async deleteGroup(groupId) {
-        await this._initialize()
-
-        await this._app.deleteGroup(groupId)
+        await promise(this._app.deleteGroup(groupId))
     }
 
     /**
@@ -30,30 +28,60 @@ export class Groups {
      * @param {string} newGroupName New group name
      */
     async renameGroup(groupId, newGroupName) {
-        await this._initialize()
-
-        await this._app.renameGroup(groupId, newGroupName)
+        await promise(this._app.renameGroup(groupId, newGroupName))
     }
 
     /**
      * Returns an array of all the groups infos
      */
     async getGroups() {
-        await this._initialize()
-
         let groups = []
-        const groupCount = await this._app.groupCount()
-        for (var i = 1; i <= groupCount; i++) {
-            let groupInfos = await this._app.getGroup(i)
+        const groupCount = await promise(this._app.call('groupCount'))
+        for (var i = 0; i < groupCount; i++) {
+            let groupInfos = await promise(this._app.call('getGroup', i))
             if (groupInfos && groupInfos[1] !== 0) {
                 let group = {
                     id: i,
                     name: groupInfos[1],
-                    entities: groupInfos[0].filter(entity => entity !== EMPTY_ADDRESS)
+                    entities: groupInfos.entities.filter(entity => entity !== EMPTY_ADDRESS)
                 }
                 groups.push(group)
             }
         }
         return groups
+    }   
+    
+    /**
+     * Returns the entities from a group
+     * @param {number} groupId Id of the group to get entities from
+     */
+    async getGroup(groupId) {
+        return (await promise(this._app.call('getGroup', groupId)))
+            .entities
+            .filter(entity => entity !== EMPTY_ADDRESS)
+    }
+
+    /**
+     * Add an entity to a group
+     * @param {number} groupId Id of the group to insert the entity in
+     * @param {string} entity Entity to add in group
+     */
+    async addEntityToGroup(groupId, entity) {
+        await promise(this._app.addEntityToGroup(groupId, entity))
+    }
+
+    /**
+     * Removes an entity from a group
+     * @param {number} groupId Id of the group to remove the entity from
+     * @param {string} entity Entity to remove from group
+     */
+    async removeEntityFromGroup(groupId, entity) {
+        await promise(this._app.removeEntityFromGroup(groupId, entity))
     }    
+}
+
+
+
+function promise(observable) {
+    return observable.take(1).toPromise()
 }
