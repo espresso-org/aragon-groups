@@ -5,6 +5,7 @@ import Aragon, { providers as aragonProviders } from '@aragon/client'
 import { Provider } from 'mobx-react'
 import App from './App'
 import { MainStore } from './stores/main-store'
+import { Groups } from './groups'
 
 /**
  * Injected stores and objects in the App
@@ -41,6 +42,7 @@ class ConnectedApp extends React.Component {
         window.location.reload();
       })
     }
+    window.groups = new Groups(this.state.app)
   }
   
   componentWillUnmount() {
