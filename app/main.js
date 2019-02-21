@@ -4,6 +4,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import Aragon, { providers } from '@aragon/client'
 import App from './App'
+import { Groups } from './groups'
 
 class ConnectedApp extends React.Component {
   state = {
@@ -22,6 +23,7 @@ class ConnectedApp extends React.Component {
         window.location.reload();
       })
     }
+    window.groups = new Groups(this.state.app)
   }
   componentWillUnmount() {
     window.removeEventListener('message', this.handleWrapperMessage)

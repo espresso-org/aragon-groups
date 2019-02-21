@@ -83,15 +83,7 @@ contract CounterApp is AragonApp {
         name = groups[_groupId].groupName;
     }
 
-    /**
-     * @notice Get a list of all the groups Id's
-     */
-     /*
-    function getGroupIds() public view returns (uint[]) {
-        return groups.groupList;
-    }*/
-
-    /**
+     /**
      * @dev Returns the group count
      */
     function groupCount() 
