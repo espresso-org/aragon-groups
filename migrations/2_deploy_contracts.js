@@ -1,5 +1,5 @@
-var CounterApp = artifacts.require('CounterApp.sol')
+var AragonGroups = artifacts.require('AragonGroups.sol')
 
 module.exports = function (deployer) {
-  deployer.deploy(CounterApp)
+  deployer.deploy(AragonGroups)
 }

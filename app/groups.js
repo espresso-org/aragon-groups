@@ -80,8 +80,6 @@ export class Groups {
     }    
 }
 
-
-
 function promise(observable) {
     return observable.take(1).toPromise()
 }

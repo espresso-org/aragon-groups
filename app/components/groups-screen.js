@@ -19,7 +19,7 @@ export const GroupsScreen = inject("mainStore")(observer(({ mainStore }) =>
                   <TableHeader title="Name" />
                   <TableHeader title="Members" />
                 </TableRow>
-                      }
+              }
             >
               {mainStore.groups.toJS().map(group =>
                 group && <GroupRow

@@ -34,5 +34,5 @@
       "network": "mainnet"
     }
   },
-  "path": "contracts/CounterApp.sol"
+  "path": "contracts/AragonGroups.sol"
 }

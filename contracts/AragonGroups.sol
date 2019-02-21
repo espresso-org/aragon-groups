@@ -1,12 +1,10 @@
 pragma solidity ^0.4.24;
 
-import "@espresso-org/object-acl/contracts/ObjectACL.sol";
+import "@aragon/os/contracts/apps/AragonApp.sol";
 import "@aragon/os/contracts/lib/math/SafeMath.sol";
 
-library AragonGroups {
+contract AragonGroups is AragonApp {
     using SafeMath for uint256;
-
-    bytes32 constant public DATASTORE_GROUP = keccak256("DATASTORE_GROUP");
 
     /**
      * Represents a group and its entities within it   
@@ -15,102 +13,116 @@ library AragonGroups {
         string groupName;
         mapping (address => uint) entitiesWithIndex;
         address[] entities;
-        bool exists;                                // Used internally to check if a group really exists
+        bool exists;
+    }
+
+    event GroupChange(uint256 groupId);
+
+    Group[] private groups;
+    uint256 public value;
+
+    bytes32 constant public GROUP_MANAGER_ROLE = keccak256("GROUP_MANAGER_ROLE");
+    bytes32 constant public INCREMENT_ROLE = keccak256("INCREMENT_ROLE");
+    bytes32 constant public DECREMENT_ROLE = keccak256("DECREMENT_ROLE");
+
+    function initialize() onlyInit public {
+        initialized();
     }
 
     /**
-     * Groups of entities
-     */
-    struct GroupData {
-        mapping (uint => Group) groups;     // Read and Write permissions for each entity
-        uint[] groupList;                   // Internal references for list of groups
-        ObjectACL acl;
-    }
-
-    function initialize(GroupData storage _self, ObjectACL _acl) internal {
-        _self.acl = _acl;
-    }
-
-    /**
-     * @notice Add a group
-     * @param _self GroupData
+     * @notice Create a new group
      * @param _groupName Name of the group
      */
-    function createGroup(GroupData storage _self, string _groupName) internal returns (uint) {
-        uint id = _self.groupList.length.add(1);
-        _self.groups[id].groupName = _groupName;
-        _self.groups[id].exists = true;
-        _self.groupList.push(id);
-        _self.acl.createObjectPermission(this, id, DATASTORE_GROUP, this);
-        return id;
+    function createGroup(string _groupName) 
+        external 
+        auth(GROUP_MANAGER_ROLE) 
+    {
+        uint256 index = groups.length++;
+        groups[index].groupName = _groupName;
+        groups[index].exists = true;
+        emit GroupChange(index);
     }
 
     /**
-     * @notice Delete a group from the datastore
-     * @param _self GroupData
+     * @notice Delete a group
      * @param _groupId Id of the group to delete
      */
-    function deleteGroup(GroupData storage _self, uint _groupId) internal {
-        delete _self.groups[_groupId];
-        delete _self.groupList[_groupId.sub(1)];
+    function deleteGroup(uint256 _groupId) 
+        external 
+        auth(GROUP_MANAGER_ROLE) 
+    {
+        require(groups[_groupId].exists);
+        delete groups[_groupId];
+        emit GroupChange(_groupId);
     }
 
     /**
      * @notice Rename a group
-     * @param _self GroupData
      * @param _groupId Id of the group to rename
      * @param _newGroupName New name for the group
      */
-    function renameGroup(GroupData storage _self, uint _groupId, string _newGroupName) internal {
-        _self.groups[_groupId].groupName = _newGroupName;
+    function renameGroup(uint256 _groupId, string _newGroupName) 
+        external 
+        auth(GROUP_MANAGER_ROLE) 
+    {
+        require(groups[_groupId].exists);
+        groups[_groupId].groupName = _newGroupName;
+        emit GroupChange(_groupId);
     }
 
     /**
      * @notice Get a specific group
-     * @param _self GroupData
      * @param _groupId Id of the group to return
      */
-    function getGroup(GroupData storage _self, uint _groupId) internal view returns (address[] _entities, string _groupName) {
-        _entities = _self.groups[_groupId].entities;
-        _groupName = _self.groups[_groupId].groupName;
+    function getGroup(uint256 _groupId) 
+        external 
+        view 
+        returns (address[] entities, string name) 
+    {        
+        entities = groups[_groupId].entities;
+        name = groups[_groupId].groupName;
     }
 
-    /**
-     * @notice Returns if an entity is part of a group
-     * @param _self GroupData
-     * @param _groupId Id of the group
-     * @param _entity Address of the entity
+     /**
+     * @dev Returns the group count
      */
-    function isEntityInGroup(GroupData storage _self, uint _groupId, address _entity) internal view returns (bool) {
-        return _self.acl.hasObjectPermission(_entity, _groupId, DATASTORE_GROUP);
+    function groupCount() 
+        external 
+        view 
+        returns (uint256) 
+    {
+        return groups.length;
     }
 
     /**
      * @notice Add an entity to a group
-     * @param _self GroupData
      * @param _groupId Id of the group to add the entity in
      * @param _entity Address of the entity
      */
-    function addEntityToGroup(GroupData storage _self, uint _groupId, address _entity) internal {
-        _self.groups[_groupId].entitiesWithIndex[_entity] = _self.groups[_groupId].entities.length.add(1);
-        _self.groups[_groupId].entities.push(_entity);
-        _self.acl.createObjectPermission(_entity, _groupId, DATASTORE_GROUP, this);
-        _self.acl.grantObjectPermission(_entity, _groupId, DATASTORE_GROUP, this);
+    function addEntityToGroup(uint256 _groupId, address _entity) 
+        auth(GROUP_MANAGER_ROLE)
+        external 
+    {
+        require(groups[_groupId].exists);
+        groups[_groupId].entitiesWithIndex[_entity] = groups[_groupId].entities.length.add(1);
+        groups[_groupId].entities.push(_entity);
+        emit GroupChange(_groupId);
     }
 
     /**
      * @notice Remove an entity from a group
-     * @param _self GroupData
      * @param _groupId Id of the group to remove the entity from 
      * @param _entity Address of the entity
      */
-    function removeEntityFromGroup(GroupData storage _self, uint _groupId, address _entity) internal {
-        uint indexOfEntity = _self.groups[_groupId].entitiesWithIndex[_entity];
+    function removeEntityFromGroup(uint256 _groupId, address _entity) 
+        auth(GROUP_MANAGER_ROLE)
+        external 
+    {
+        uint indexOfEntity = groups[_groupId].entitiesWithIndex[_entity];
         if (indexOfEntity > 0) {
             indexOfEntity = indexOfEntity.sub(1);
-            delete _self.groups[_groupId].entities[indexOfEntity];
-            delete _self.groups[_groupId].entitiesWithIndex[_entity];
-            _self.acl.revokeObjectPermission(_entity, _groupId, DATASTORE_GROUP, this);
+            delete groups[_groupId].entities[indexOfEntity];
+            delete groups[_groupId].entitiesWithIndex[_entity];
         }
     }
 }

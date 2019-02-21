@@ -12,7 +12,8 @@ import { Groups } from './groups'
  */
 function initProvidedObjects() {
   const aragonApp = new Aragon(new aragonProviders.WindowMessage(window.parent))
-  const mainStore = new MainStore()
+  const groups = new Groups(aragonApp)
+  const mainStore = new MainStore(groups)
   return { aragonApp, mainStore }
 }
 

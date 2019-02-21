@@ -1,4 +1,4 @@
-const GroupApp = artifacts.require('CounterApp.sol')
+const GroupApp = artifacts.require('AragonGroups.sol')
 
 const EMPTY_ADDR = '0x0000000000000000000000000000000000000000'
 
