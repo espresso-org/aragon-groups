@@ -33,7 +33,10 @@ contract CounterApp is AragonApp {
      * @notice Create a new group
      * @param _groupName Name of the group
      */
-    function createGroup(string _groupName) external auth(MANAGER_ROLE) {
+    function createGroup(string _groupName) 
+        external 
+        // auth(MANAGER_ROLE) 
+    {
         uint id = groups.length;
         groups[id].groupName = _groupName;
         groups[id].exists = true;
@@ -44,7 +47,10 @@ contract CounterApp is AragonApp {
      * @notice Delete a group
      * @param _groupId Id of the group to delete
      */
-    function deleteGroup(uint256 _groupId) external auth(MANAGER_ROLE) {
+    function deleteGroup(uint256 _groupId) 
+        external 
+        //auth(MANAGER_ROLE) 
+    {
         require(groups[_groupId].exists);
         delete groups[_groupId];
         emit GroupChange(_groupId);
@@ -55,7 +61,10 @@ contract CounterApp is AragonApp {
      * @param _groupId Id of the group to rename
      * @param _newGroupName New name for the group
      */
-    function renameGroup(uint256 _groupId, string _newGroupName) external auth(MANAGER_ROLE) {
+    function renameGroup(uint256 _groupId, string _newGroupName) 
+        external 
+        //auth(MANAGER_ROLE) 
+    {
         require(groups[_groupId].exists);
         groups[_groupId].groupName = _newGroupName;
         emit GroupChange(_groupId);
@@ -65,7 +74,11 @@ contract CounterApp is AragonApp {
      * @notice Get a specific group
      * @param _groupId Id of the group to return
      */
-    function getGroup(uint256 _groupId) public view returns (address[] entities, string name) {        
+    function getGroup(uint256 _groupId) 
+        external 
+        view 
+        returns (address[] entities, string name) 
+    {        
         entities = groups[_groupId].entities;
         name = groups[_groupId].groupName;
     }
@@ -81,7 +94,11 @@ contract CounterApp is AragonApp {
     /**
      * @dev Returns the group count
      */
-    function groupCount() external view returns (uint256) {
+    function groupCount() 
+        external 
+        view 
+        returns (uint256) 
+    {
         return groups.length - 1;
     }
 
