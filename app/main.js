@@ -3,7 +3,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import Aragon, { providers as aragonProviders } from '@aragon/client'
 import { Provider } from 'mobx-react'
-import App from './App'
+import { App } from './App'
 import { MainStore } from './stores/main-store'
 
 /**
@@ -42,7 +42,7 @@ class ConnectedApp extends React.Component {
       })
     }
   }
-  
+
   componentWillUnmount() {
     window.removeEventListener('message', this.handleWrapperMessage)
   }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { AragonApp, AppBar } from '@aragon/ui'
+import { AragonApp, AppBar, Button } from '@aragon/ui'
 import { observer, inject } from 'mobx-react'
 import styled from 'styled-components'
 import { Screen } from './components/screen'
@@ -10,7 +10,7 @@ import { LoadingRing } from './components/loading-ring'
 export const App =
   inject("mainStore")(
     observer(({ mainStore }) =>
-      <AppContainer>
+      <AppContainer publicUrl="/groups">
         <Screen position={0} animate>
           <span>
             <AppBar endContent={<Button mode="strong" onClick={() => mainStore.setEditMode(EditMode.GroupCreate)}>New Group</Button>}>
