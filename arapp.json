@@ -2,7 +2,7 @@
   "roles": [
     {
       "name": "Manage groups",
-      "id": "MANAGER_ROLE",
+      "id": "GROUP_MANAGER_ROLE",
       "params": []
     },
     {
