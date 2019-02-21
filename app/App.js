@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { GroupsScreen } from './components/groups-screen'
 import { EditPanel } from './components/edit-panel'
 import { LoadingRing } from './components/loading-ring'
+import { EditMode } from './stores/edit-mode'
 
 export const App =
   inject("mainStore")(

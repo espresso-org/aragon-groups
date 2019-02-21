@@ -16,10 +16,10 @@ export class MainStore {
 
   @observable groupsLoading = false
 
-  _groups
+  _groupsInterface
 
-  constructor(groups) {
-    this._groups = groups
+  constructor(groupsInterface) {
+    this._groupsInterface = groupsInterface
     window.mainStore = this
   }
 
@@ -29,14 +29,14 @@ export class MainStore {
 
   @action async createGroup(name) {
     if (name) {
-      await this._groups.createGroup(name)
+      await this._groupsInterface.createGroup(name)
       this.setEditMode(EditMode.None)
     }
   }
 
   @action async deleteGroup(groupId) {
     if (this.selectedGroup != null) {
-      await this._groups.deleteGroup(groupId)
+      await this._groupsInterface.deleteGroup(groupId)
       this.setEditMode(EditMode.None)
       this.selectedGroup = null
     }
@@ -44,20 +44,20 @@ export class MainStore {
 
   @action async renameGroup(groupId, newGroupName) {
     if (newGroupName) {
-      await this._groups.renameGroup(groupId, newGroupName)
+      await this._groupsInterface.renameGroup(groupId, newGroupName)
       this.setEditMode(EditMode.None)
     }
   }
 
   @action async addEntityToGroup(groupId, entity) {
     if (this.validateEthAddress(entity)) {
-      await this._groups.addEntityToGroup(groupId, entity)
+      await this._groupsInterface.addEntityToGroup(groupId, entity)
       this.setEditMode(EditMode.None)
     }
   }
 
   @action async removeEntityFromGroup(groupId, entity) {
-    await this._groups.removeEntityFromGroup(groupId, entity)
+    await this._groupsInterface.removeEntityFromGroup(groupId, entity)
     this.selectedGroupEntity = null
   }
 
@@ -93,7 +93,7 @@ export class MainStore {
 
   async initialize() {
     return new Promise(async (res) => {
-      (await this._groups.events()).subscribe((event) => {
+      (await this._groupsInterface.events()).subscribe((event) => {
         switch (event.event) {
           case 'GroupChange':
             this._refreshAvailableGroups()
@@ -108,7 +108,7 @@ export class MainStore {
 
   async _refreshAvailableGroups() {
     this.groupsLoading = true
-    this.groups = await this._datastore.getGroups()
+    this.groups = await this._groupsInterface.getGroups()
 
     if (this.selectedGroup)
       this.selectedGroup = this.groups.find(group => group && group.id === this.selectedGroup.id)

@@ -28,13 +28,12 @@ export const EditPanel =
         onClose={() => { mainStore.editMode = EditMode.None; mainStore.fileUploadIsOpen = false; mainStore.fileContentIsOpen = false; }}
       >
         <Content>
-          {(mainStore.selectedFile || mainStore.isGroupsSectionOpen || mainStore.fileUploadIsOpen || mainStore.fileContentIsOpen) &&
-        Switch({
-          [EditMode.None]: null,
-          [EditMode.GroupCreate]: () => <EditGroupCreate />,
-          [EditMode.GroupName]: () => <EditGroupName group={mainStore.selectedGroup} />,
-          [EditMode.GroupMember]: () => <EditGroupMember group={mainStore.selectedGroup} />,
-        }, mainStore.editMode)}
+          {Switch({
+            [EditMode.None]: null,
+            [EditMode.GroupCreate]: () => <EditGroupCreate />,
+            [EditMode.GroupName]: () => <EditGroupName group={mainStore.selectedGroup} />,
+            [EditMode.GroupMember]: () => <EditGroupMember group={mainStore.selectedGroup} />,
+          }, mainStore.editMode)}
         </Content>
       </SidePanel>)
   )
