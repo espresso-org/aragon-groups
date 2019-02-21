@@ -77,7 +77,11 @@ export class Groups {
      */
     async removeEntityFromGroup(groupId, entity) {
         await promise(this._app.removeEntityFromGroup(groupId, entity))
-    }    
+    }   
+    
+    events() {
+        return this._app.events()
+    }
 }
 
 function promise(observable) {
