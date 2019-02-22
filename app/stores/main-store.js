@@ -21,6 +21,7 @@ export class MainStore {
   constructor(groupsInterface) {
     this._groupsInterface = groupsInterface
     window.mainStore = this
+    this.initialize()
   }
 
   @action setEditMode(mode) {
