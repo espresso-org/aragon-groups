@@ -124,6 +124,7 @@ contract AragonGroups is AragonApp {
             delete groups[_groupId].entities[indexOfEntity];
             delete groups[_groupId].entitiesWithIndex[_entity];
         }
+        emit GroupChange(_groupId);
     }
 
     /**

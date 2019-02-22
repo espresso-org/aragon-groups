@@ -20,8 +20,8 @@ export class MainStore {
 
   constructor(groupsInterface) {
     this._groupsInterface = groupsInterface
+    setTimeout(() => this.initialize(), 1)
     window.mainStore = this
-    this.initialize()
   }
 
   @action setEditMode(mode) {
