@@ -92,18 +92,14 @@ export class MainStore {
   }
 
   async initialize() {
-    return new Promise(async (res) => {
-      (await this._groupsInterface.events()).subscribe((event) => {
-        switch (event.event) {
-          case 'GroupChange':
-            this._refreshAvailableGroups()
-            break
-        }
-      });
-
-      this._refreshAvailableGroups()
-      res()
+    this._groupsInterface.events().subscribe((event) => {
+      switch (event.event) {
+        case 'GroupChange':
+          this._refreshAvailableGroups()
+          break
+      }
     })
+    this._refreshAvailableGroups()
   }
 
   async _refreshAvailableGroups() {

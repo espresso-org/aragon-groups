@@ -1,7 +1,6 @@
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export class Groups {
-
     constructor(aragonApp) {
         this._app = aragonApp
     }
