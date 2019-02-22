@@ -33,38 +33,16 @@ export class Groups {
     /**
      * Returns an array of all the groups infos
      */
-    /*async getGroups() {
+    async getGroups() {
         let groups = []
         const groupCount = await promise(this._app.call('groupCount'))
         for (var i = 0; i < groupCount; i++) {
             let groupInfos = await promise(this._app.call('getGroup', i))
-            if (groupInfos && groupInfos[1] !== 0) {
+            if (groupInfos && groupInfos.name !== "") {
                 let group = {
                     id: i,
-                    name: groupInfos[1],
+                    name: groupInfos.name,
                     entities: groupInfos.entities.filter(entity => entity !== EMPTY_ADDRESS)
-                }
-                groups.push(group)
-            }
-        }
-        return groups
-    }*/
-    
-    /**
-     * Returns an array of all the groups infos
-     */
-    async getGroups() {
-        await this._initialize()
-
-        let groups = []
-        let groupsIds = await this._app.getGroupIds()
-        for (var i = 0; i < groupsIds.length; i++) {
-            let groupInfos = await this._app.getGroup(groupsIds[i])
-            if (groupInfos && groupInfos[1] !== 0) {
-                let group = {
-                    id: groupsIds[i],
-                    name: groupInfos[1],
-                    entities: groupInfos[0].filter(entity => entity !== EMPTY_ADDRESS)
                 }
                 groups.push(group)
             }
