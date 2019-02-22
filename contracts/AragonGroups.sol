@@ -125,4 +125,17 @@ contract AragonGroups is AragonApp {
             delete groups[_groupId].entitiesWithIndex[_entity];
         }
     }
+
+    /**
+     * @dev Returns true if entity is part of the specified group
+     * @param _groupId Group Id
+     * @param _entity Entity address
+     */
+    function isEntityInGroup(uint256 _groupId, address _entity) 
+        external
+        view 
+        returns (bool)
+    {
+        return groups[_groupId].entitiesWithIndex[_entity] > 0;
+    }
 }
